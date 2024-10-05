@@ -2,7 +2,7 @@ import nacl from "tweetnacl";
 import bs58 from "bs58";
 import { sha256 } from "js-sha256";
 
-class PoRT {
+export class PoRT {
   constructor(initParams = {}) {
     this.trustedNodeAddress =
       initParams.trustedNodeAddress || "https://k2-tasknet.koii.live";
@@ -27,8 +27,8 @@ class PoRT {
         .then(async (res) => {
           res.push({
             data: {
-              url: this.trustedNodeAddress,
-            },
+              url: this.trustedNodeAddress
+            }
           });
           const validNodes = await this.getNodesRunningAttentionGame(res);
           this.nodes = validNodes;
@@ -38,7 +38,6 @@ class PoRT {
         .catch((e) => {
           this.nodes = [];
           console.error(e);
-          reject(e);
         });
     });
   }
@@ -48,7 +47,7 @@ class PoRT {
     let headers = await this.signPort(id);
     if (headers) {
       for (let i = 0; i < this.nodes.length; i++) {
-        fetch(`${this.nodes[i]}/attention/submit-ports`, {
+        fetch(this.nodes[i] + "/attention/submit-ports", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -72,7 +71,7 @@ class PoRT {
   }
 
   checkNodeAttentionGame(node) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
       if (node.includes("localhost") || node.includes("<")) {
         return resolve(false);
       }
